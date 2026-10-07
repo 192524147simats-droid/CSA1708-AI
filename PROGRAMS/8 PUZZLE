@@ -1,0 +1,57 @@
+from collections import deque
+
+def bfs(start, goal):
+    queue = deque([(start, [])])
+    visited = set()
+
+    while queue:
+        state, path = queue.popleft()
+
+        if state == goal:
+            return path + [state]
+
+        if tuple(state) in visited:
+            continue
+
+        visited.add(tuple(state))
+
+        zero = state.index(0)
+        row = zero // 3
+        col = zero % 3
+
+        moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+        for dr, dc in moves:
+            nr = row + dr
+            nc = col + dc
+
+            if 0 <= nr < 3 and 0 <= nc < 3:
+                new_state = state.copy()
+                new_zero = nr * 3 + nc
+
+                new_state[zero], new_state[new_zero] = \
+                    new_state[new_zero], new_state[zero]
+
+                queue.append((new_state, path + [state]))
+
+    return None
+
+
+# User input
+print("Enter Initial State (use 0 for blank):")
+start = list(map(int, input().split()))
+
+print("Enter Goal State:")
+goal = list(map(int, input().split()))
+
+solution = bfs(start, goal)
+
+if solution:
+    print("\nSolution:")
+    for state in solution:
+        print(state[0:3])
+        print(state[3:6])
+        print(state[6:9])
+        print()
+else:
+    print("No solution found")
